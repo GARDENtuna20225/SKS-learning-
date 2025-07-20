@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shooting Game</title>
+  <style>
+    canvas { background: #222; display: block; margin: 40px auto; }
+  </style>
+</head>
+<body>
+  <canvas id="game" width="400" height="500"></canvas>
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    let shipX = 200, bullets = [], enemies = [], score = 0, gameOver = false;
+
+    function drawShip() {
+      ctx.fillStyle = "#0ff";
+      ctx.fillRect(shipX - 20, 460, 40, 20);
+    }
+    function drawBullets() {
+      ctx.fillStyle = "#ff0";
+      bullets.forEach(b => ctx.fillRect(b.x - 2, b.y, 4, 10));
+    }
+    function drawEnemies() {
+      ctx.fillStyle = "#f00";
+      enemies.forEach(e => ctx.fillRect(e.x - 15, e.y, 30, 20));
+    }
+    function update() {
+      bullets = bullets.filter(b => b.y > -10);
+      bullets.forEach(b => b.y -= 8);
+      enemies.forEach(e => e.y += 2);
+
+      // Collision
+      bullets.forEach((b, bi) => {
+        enemies.forEach((e, ei) => {
+          if (Math.abs(b.x - e.x) < 18 && Math.abs(b.y - e.y) < 20) {
+            bullets.splice(bi, 1);
+            enemies.splice(ei, 1);
+            score++;
+          }
+        });
+      });
+
+      // Game over if enemy reaches bottom
+      if (enemies.some(e => e.y > 480)) gameOver = true;
+
+      // Add new enemy
+      if (Math.random() < 0.02) enemies.push({x: Math.random() * 370 + 15, y: -20});
+    }
+    function draw() {
+      ctx.clearRect(0, 0, 400, 500);
+      drawShip();
+      drawBullets();
+      drawEnemies();
+      ctx.fillStyle = "#fff";
+      ctx.font = "20px Arial";
+      ctx.fillText("Score: " + score, 10, 30);
+      if (gameOver) {
+        ctx.fillStyle = "#f00";
+        ctx.font = "32px Arial";
+        ctx.fillText("Game Over!", 110, 250);
+      }
+    }
+    function gameLoop() {
+      if (!gameOver) {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+      } else {
+        draw();
+      }
+    }
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      shipX = e.clientX - rect.left;
+      if (shipX < 20) shipX = 20;
+      if (shipX > 380) shipX = 380;
+    });
+    canvas.addEventListener('mousedown', () => {
+      if (!gameOver) bullets.push({x: shipX, y: 460});
+      else location.reload();
+    });
+    gameLoop();
+  </script>
+</body>
+</html>

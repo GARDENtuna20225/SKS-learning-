@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SKS learning</title>
+<!-- General favicon for browser tab -->
+<link rel="icon" href="logo.png" type="image/png">
+
+<!-- Home screen icon for mobile -->
+<link rel="apple-touch-icon" href="https://i.postimg.cc/XZ8JgYCZ/IMG-20250718-WA0008.jpg">
+<head>
+<body>
+<style>.menu-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}.menu-icon {
+  width: 30px;
+  cursor: pointer;
+}.menu-icon div {
+  height: 4px;
+  background-color: #333;
+  margin: 5px 0;
+  border-radius: 2px;
+}.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #f1f1f1;
+  min-width: 140px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}.dropdown a {
+  padding: 10px 15px;
+  display: block;
+  text-decoration: none;
+  color: black;
+}.dropdown a:hover {
+  background-color: #ddd;
+}
+</style>
+
+<div class="menu-wrapper">
+  <div class="menu-icon" onclick="toggleDropdown()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <div class="dropdown" id="menu">
+    <a>study material</a>
+    <a href="study website .html">Books</a>
+    <a href="scientific calculator.html">Calculator</a>
+    <a href="My contact .html">Contact me</a>
+  </div>
+</div>
+
+<script>
+function toggleDropdown() {
+  const menu = document.getElementById("menu");
+  menu.style.display = menu.style.display === "block"? "none": "block";
+}
+</script>
+<style>.form-box,.output-box {
+  width: 300px;
+  height: 350px;
+  margin: 60px auto;
+  padding: 20px;
+  border: 2px solid #2196F3;
+  border-radius: 8px;
+  background-color: #f1f9ff;
+}
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+}
+button {
+  margin-top: 15px;
+  padding: 10px;
+  width: 100%;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+</style>
+
+<div class="form-box" id="formBox">
+  <h3>Student Form</h3>
+  <input type="text" id="name" placeholder="Name">
+  <input type="text" id="roll" placeholder="Roll Number">
+  <input type="text" id="class" placeholder="Class">
+  <input type="text" id="School" placeholder="School">
+  <input type="text" id="Address" placeholder="Address">
+  <button onclick="showDetails()">Submit</button>
+</div>
+
+<div class="output-box" id="output" style="display:none;">
+  <h3>Student Info</h3>
+  <p><strong>Name:</strong> <span id="outName"></span></p>
+  <p><strong>Roll Number:</strong> <span id="outRoll"></span></p>
+  <p><strong>Class:</strong> <span id="outClass"></span></p>
+  <p><strong>School:</strong> <span id="outSchool"></span></p>
+  <p><strong>Address:</strong> <span id="outAddress"></span></p>
+  <button onclick="resetForm()">Reset/Edit</button>
+  
+</div>
+
+<script>
+// Restore form data and show student info if already submitted
+window.onload = function() {
+  ['name','roll','class','School','Address'].forEach(id => {
+    document.getElementById(id).value = localStorage.getItem('student_'+id) || '';
+  });
+  if (localStorage.getItem('form_submitted') === 'yes') {
+    showDetails();
+  }
+};
+
+// Save data on input
+['name','roll','class','School','Address'].forEach(id => {
+  document.getElementById(id).oninput = function() {
+    localStorage.setItem('student_'+id, this.value);
+  };
+});
+
+function showDetails() {
+  document.getElementById('outName').textContent = document.getElementById('name').value;
+  document.getElementById('outRoll').textContent = document.getElementById('roll').value;
+  document.getElementById('outClass').textContent = document.getElementById('class').value;
+  document.getElementById('outSchool').textContent = document.getElementById('School').value;
+  document.getElementById('outAddress').textContent = document.getElementById('Address').value;
+
+  // Mark form as submitted
+  localStorage.setItem('form_submitted', 'yes');
+  // Hide form & show output
+  document.getElementById('formBox').style.display = 'none';
+  document.getElementById('output').style.display = 'block';
+}
+function resetForm() {
+  localStorage.removeItem('form_submitted');
+  document.getElementById('formBox').style.display = 'block';
+  document.getElementById('output').style.display = 'none';
+}
+
+</script>
+
+
+
+
+
+
+
+</body>
